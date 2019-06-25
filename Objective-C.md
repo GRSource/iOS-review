@@ -130,3 +130,7 @@ copy
 问6：copy关键字的结果是什么样的？
 ![copy关键字](./image/copy关键字.png)
 
+## 十、+load和+initialize
+
+initialize会在第一次初始化这个类之前被调用，我们用它来初始化静态变量  
+load在iOS应用启动的时候，在main函数调用之前就会调用
