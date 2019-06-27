@@ -1,14 +1,91 @@
 # Block
 
+## 手写Block
+
+typedef void(^BlockA)(NSData *);  
+typedef void(^BlockB)(BlockA, NSString *);  
+typedef void(^BlockC)(void(^)(NSData *), NSString *);
+typedef NSString *(^BlockC)(void(^)(NSData *), NSString *);
+@property (nonatomic, copy) void(^blockA)(NSData *);  
+@property (nonatomic, copy) void(^blockB)(void(^)(NSData *), NSString *);  
+`- (void)func:(void(^)(NSData *))blockA;`  
+`- (void)func:(void(^)(void(^)(NSData *), NSString *))blockB;`  
+`- (void)func:(BlockA) block;`  
+`- (void)func:(BlockB) block;`  
+void(^BlockA)(NSData *) = ^void(NSData *data) {
+  
+};  
+void(^BlockB)(void(^)(NSData *), NSString *) = ^void(void(^BlockA)(NSData *data), NSString *str) {
+
+};  
+
 ## Block本质
+
+什么是Block？  
+Block是将函数及其执行上下文封装起来的对象。  
+什么是Block调用？  
+Block调用即是函数的调用。
 
 ## Block截获变量
 
+![Block例子](./image/Block例子.png)
+结果为12  
+multiplier加上static之后结果为8  
+multiplier加上__block之后结果为8  
+Block截获的变量分类：  
+
+* 局部变量，又分为基本数据类型和对象类型
+* 静态局部变量
+* 全局变量
+* 静态全局变量
+
+1.对于基本类型的局部变量截获其值。  
+2.对于对象类型的局部变量连同所有权修饰符一起截获。  
+3.以指针形式截获静态局部变量。  
+4.不截获全局变量和静态全局变量。  
+
 ## __block和__weak
+
+一般情况下，对被截获变量进行赋值操作需要添加__block修饰符。  
+对于基本数据类型和对象类型的局部变量需要使用__block进行赋值，对于静态局部变量、全局变量、静态全局变量不需要使用__block修饰符。  
+__block修饰的变量变成了对象。  
+![__block](./image/__block.png)
+__forwarding指针是用来干什么的？  
 
 ## Block内存管理
 
+Block类型有三种：  
+
+* _NSConcreteGlobalBlock，全局block
+* _NSConcreteStackBlock，栈block
+* _NSConcreteMallocBlock，堆block
+
+![Block内存](./image/Block内存.png)
+
+Block的Copy操作：  
+![Block_Copy](./image/Block_Copy.png)
+栈block拷贝之后到了堆，数据区的block拷贝之后什么也不做，堆block拷贝之后增加引用计数。  
+
+栈上Block的销毁：  
+![栈Block销毁](./image/栈Block销毁.png)
+栈上的__block变量和Block在函数作用域结束后都会进行销毁。  
+
+栈上Block的Copy：  
+![Block的Copy](./image/Block的Copy.png)
+栈上的Block进行Copy操作，在MRC上会内存泄漏
+
+栈上__block变量的Copy：
+![__block变量的Copy](./image/__block变量的Copy.png)
+
+Block为什么使用copy而不使用strong？  
+block变量是在栈上创建的，为了在作用域之外使用block，需要将它拷贝到堆区，而我们对block使用strong也是可以的，因为block的retain默认是用copy实现的，为了保持属性的使用和声明一致，最好使用copy  
+
+__forwarding存在的意义  
+不论在任何内存位置，我们都可以顺利的通过__forwarding访问同一个__block变量
+
 ## Block循环引用
+
+__block在MRC下，不会产生循环引用。在ARC下，会产生循环引用，引起内存泄漏。
 
 ## Block里面self、weakSelf、strongSelf使用
 
