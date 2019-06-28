@@ -134,3 +134,12 @@ copy
 
 initialize会在第一次初始化这个类之前被调用，我们用它来初始化静态变量  
 load在iOS应用启动的时候，在main函数调用之前就会调用
+
+## NSCache和NSDictionary
+
+NSCache胜过NSDictionary之处在于：
+
+1. 当系统资源将要耗尽时，它可以自动删减缓存。
+2. NSCache还会先行删减“最久未使用的”(lease recently used)对象。
+3. NSCache 并不会“拷贝”键，而是会“保留”它。NSCache对象不拷贝键的原因在于：很多时候，键都是有不支持拷贝操作的对象来充当的。因此，NSCache 不会自动拷贝键，所以说，在健不支持拷贝操作的情况下，该类用起来比字典更方便。
+4. NSCache是线程安全的。而NSDictionary则绝不具备此优势，意思就是：在开发者自己不编写加锁代码的前提下，多个线程便可以同时访问NSCache.
