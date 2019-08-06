@@ -24,5 +24,3 @@
 * [视频及音频处理](./视频及音频处理.md)
 * [直播类软件实现方案](./直播类软件实现方案.md)
 * [聊天类软件实现方案](./聊天类软件实现方案.md)
-
-https://hit-alibaba.github.io/interview/iOS/ObjC-Basic/MM.html
